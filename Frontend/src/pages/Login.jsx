@@ -1,10 +1,10 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Mail, Lock, UserRoundPen} from 'lucide-react'
 
 const Login = () => {
-  const queryParams = new URLSearchParams(window.location.search)
-  const initialState = queryParams.get('state') === 'signup' ? 'signup' : 'login'
+  const [searchParams] = useSearchParams()
+  const initialState = searchParams.get("state") === "signup" ? "signup" : "login"
   const [state, setState] = React.useState(initialState)
 
     const [formData, setFormData] = React.useState({
