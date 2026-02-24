@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom'
 import { Mail, Lock, UserRoundPen} from 'lucide-react'
 
 const Login = () => {
-  const [state, setState] = React.useState("login")
+  const queryParams = new URLSearchParams(window.location.search)
+  const initialState = queryParams.get('state') === 'signup' ? 'signup' : 'login'
+  const [state, setState] = React.useState(initialState)
 
     const [formData, setFormData] = React.useState({
         name: '',
@@ -30,7 +32,7 @@ const Login = () => {
                     {state === "login" ? "Login" : "Sign up"}
                 </h1>
 
-                <p className="text-gray-400 text-sm mt-2">Please sign in to continue</p>
+                <p className="text-gray-400 text-sm mt-2">{state === "login" ? "Please login in to continue" : "Please sign in to continue"}</p>
 
                 {state !== "login" && (
                     <div className="flex items-center w-full mt-4 bg-white/50 ring-2 ring-white/10 border-1 border-black/10 focus-within:ring-green-500/60 h-12 rounded-full overflow-hidden pl-6 gap-2 transition-all ">
