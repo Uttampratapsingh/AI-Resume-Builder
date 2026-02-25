@@ -1,3 +1,5 @@
+import imageKit from "../config/imageKit.js";
+import fs from "fs";
 import Resume from "../models/resume.js";
 
 //controller for getting user resume 
@@ -101,7 +103,22 @@ export const updateResume = async (req,res)=>{
         const {resumeId,resumeData,removeBackground} = req.body; // Get the resume data and removeBackground flag from the request body
         const image = req.file; // Get the uploaded image file from the request (if any)
 
+        
         let resumeDataCopy = JSON.parse(resumeData); // Parse the resumeData string into a JavaScript object
+        
+        if(image){
+            const imageBufferData = fs.createReadStream(image.path); // Create a readable stream from the uploaded image file
+
+            const response = await imageKit.files.upload({
+                file: imageBufferData,// Set the file data to be uploaded to ImageKit
+                fileName: 'resume.png', // Set the file name for the uploaded image
+                folder : 'user-resumes', // Specify the folder in ImageKit where the image will be stored
+                transformation:{ 
+                    pre:'w-300,h-300,fo-face,z-0.75' + // Apply transformations to the image, such as resizing to 300x300 pixels, focusing on the face, and setting the zoom level to 0.75
+                    (removeBackground ? ',e-background_removal' : '') // If removeBackground is true, add the background removal transformation
+                }
+            });
+        }
 
         const resume = await Resume.findByIdAndUpdate({userId, _id: resumeId},resumeDataCopy, {new: true}) // Find the resume by userId and resumeId, and update it with the new resume data. The {new: true} option ensures that the updated resume is returned in the response.
 
