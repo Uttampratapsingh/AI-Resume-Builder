@@ -1,4 +1,4 @@
-import Resume from "../models/resume";
+import Resume from "../models/resume.js";
 
 //controller for getting user resume 
 // GET: /api/resume
