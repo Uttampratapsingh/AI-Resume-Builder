@@ -37,18 +37,18 @@ const Login = () => {
                 {state !== "login" && (
                     <div className="flex items-center w-full mt-4 bg-white/50 ring-2 ring-white/10 border-1 border-black/10 focus-within:ring-green-500/60 h-12 rounded-full overflow-hidden pl-6 gap-2 transition-all ">
                         <UserRoundPen />
-                        <input type="text" name="name" placeholder="Name" className="w-full bg-transparent text-black placeholder-black/60 outline-none" value={formData.name} onChange={handleChange} required />
+                        <input type="text" name="name" placeholder="Name" className="w-full bg-transparent text-black placeholder-black/60 focus:ring-0 focus:outline-none border-0" value={formData.name} onChange={handleChange} required />
                     </div>
                 )}
 
                 <div className="flex items-center w-full mt-4 bg-white/50 ring-2 ring-white/10 border-1 border-black/10 focus-within:ring-green-500/60 h-12 rounded-full overflow-hidden pl-6 gap-2 transition-all ">
                     <Mail />
-                    <input type="email" name="email" placeholder="Email id" className="w-full bg-transparent text-black placeholder-black/60  outline-none" value={formData.email} onChange={handleChange} required />
+                    <input type="email" name="email" placeholder="Email id" className="w-full bg-transparent text-black placeholder-black/60 focus:ring-0 focus:outline-none border-0" value={formData.email} onChange={handleChange} required />
                 </div>
 
                 <div className="flex items-center w-full mt-4 bg-white/50 ring-2 ring-white/10 border-1 border-black/10 focus-within:ring-green-500/60 h-12 rounded-full overflow-hidden pl-6 gap-2 transition-all ">
                     <Lock />
-                    <input type="password" name="password" placeholder="Password" className="w-full bg-transparent text-black placeholder-black/60 outline-none" value={formData.password} onChange={handleChange} required />
+                    <input type="password" name="password" placeholder="Password" className="w-full bg-transparent text-black placeholder-black/60 focus:ring-0 focus:outline-none border-0" value={formData.password} onChange={handleChange} required />
                 </div>
 
                 <div className="mt-4 text-left">
