@@ -16,13 +16,13 @@ export const registerUser = async (req, res) => {
         
         //check if required fields are present
         if(!name || !email || !password){
-            return res.status(400).json({message: "Please fill all the fields"});
+            throw new Error("Please fill all the fields");
         }
 
         //check if user already exists
         const existingUser = await User.findOne({email});
         if(existingUser){
-            return res.status(400).json({message: "User already exists"});
+            throw new Error("User already exists");
         }
 
         //hash the password

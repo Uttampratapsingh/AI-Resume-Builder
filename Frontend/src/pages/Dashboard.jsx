@@ -2,6 +2,9 @@ import { FilePenLineIcon, PencilIcon, PlusIcon, TrashIcon, UploadCloud, UploadCl
 import React, { useEffect, useState } from 'react'
 import { dummyResumeData } from '../assets/assets'
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import api from '../configs/api.js'
+import { toast } from 'react-hot-toast';
 
 const Dashboard = () => {
   const colors = ["#9333ea", "#d97706", "#dc2626", "#0284c7", "#16a34a"];
@@ -13,6 +16,8 @@ const Dashboard = () => {
   const [editResumeId, setEditResumeId] = useState(null);
   const navigate = useNavigate();
 
+  const {user,token} = useSelector(state => state.auth);
+
 
   const loadAllResumes = async () => {
     setAllResumes(dummyResumeData);
@@ -23,10 +28,18 @@ const Dashboard = () => {
   },[])
 
   const createResume = async (e) => {
-    e.preventDefault();
-    setShowCreateResume(false);
-    setTitle("");
-    navigate(`/app/builder/res123`);
+    try {
+      e.preventDefault();
+      const {data} = await api.post('/api/resumes/create',{title},{headers:{
+        Authorization:token }})
+      setAllResumes(prev => [...prev, data.resume]);
+      setShowCreateResume(false);
+      setTitle("");
+      navigate(`/app/builder/${data.resume._id}`);
+    } catch (error) {
+      toast.error("Failed to create resume. Please try again.");
+      console.error("Error creating resume:", error);
+    }
   }
 
   const uploadResume = async (e) => {
