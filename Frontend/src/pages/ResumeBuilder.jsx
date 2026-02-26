@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { dummyResumeData } from '../assets/assets';
 import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User } from 'lucide-react';
 import PersonalInfoForm from '../components/PersonalInfoForm';
 import ResumePreview from '../components/ResumePreview';
@@ -14,6 +13,7 @@ import ProjectForm from '../components/ProjectForm';
 import SkillsForm from '../components/SkillsForm';
 import { useSelector } from 'react-redux';
 import api from '../configs/api.js';
+import { toast } from 'react-hot-toast';
 
 const ResumeBuilder = () => {
 
@@ -65,8 +65,20 @@ const ResumeBuilder = () => {
   const activeSection = sections[activeSectionIndex];
 
 
-  const changeResumeVisibility = () => {
-    setResumeData({...resumeData, public: !resumeData.public})
+  const changeResumeVisibility = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("resumeId",resumeId);
+      formData.append("resumeData",JSON.stringify({public: !resumeData.public}));
+
+      const {data} = await api.put('/api/resumes/update',formData,{headers:{Authorization: token}});
+
+      setResumeData({...resumeData, public: !resumeData.public});
+      toast.success(data.message);
+    } catch (error) {
+      console.error("Error changing resume visibility:", error);
+      toast.error("Failed to change resume visibility.");
+    }
   }
 
   //Web Share API to share a resume link.
@@ -87,6 +99,32 @@ const ResumeBuilder = () => {
   const downloadResume = () => {
     window.print();
   };
+
+  const saveResume = async () => {
+    try {
+      let updatedResumeData = structuredClone(resumeData); // create a deep copy of resumeData to avoid mutating state directly
+
+      //remove image from updatedResumeData
+      if(typeof resumeData.personal_info.image === 'object' ){ // here we are checking if the image is an object (newly uploaded) or a string (existing image URL). We only want to delete the image from updatedResumeData if it's a new upload, because if it's an existing image URL, we want to keep it in the data sent to the backend.
+        delete updatedResumeData.personal_info.image;
+      }
+
+      const formData = new FormData(); // we are using FormData because we need to send the image file along with the resume data, and FormData allows us to send both text and files in a single request.
+      formData.append("resumeId",resumeId); // here we are appending the resumeId to the formData so that the backend knows which resume to update.
+      formData.append("resumeData",JSON.stringify(updatedResumeData)); // here we are appending the resumeData as a JSON string to the formData, because FormData can only handle string or Blob values, so we need to stringify the resumeData object before sending it.
+      removeBackground && formData.append("removeBackground", "yes"); // here we are appending the removeBackground flag to the formData only if it's true, because we only want to tell the backend to remove the background image if the user has selected that option.
+
+      typeof resumeData.personal_info.image === 'object' && formData.append("image", resumeData.personal_info.image); // here we are appending the image file to the formData only if it's a new upload (i.e., if it's an object). If it's an existing image URL (i.e., a string), we don't need to append it to the formData because the backend can continue using the existing image URL without needing a new file.
+
+      const {data} = await api.put('api/resumes/update',formData,{headers:{Authorization: token}});
+      setResumeData(data.resume);
+      toast.success(data.message);
+      
+    } catch (error) {
+      toast.error("Failed to save resume.");
+      console.error("Error saving resume:", error);
+    }
+  }
 
 
   return (
@@ -179,7 +217,7 @@ const ResumeBuilder = () => {
                   <SkillsForm data={resumeData.skills} onChange={(data)=>setResumeData(prev=>({...prev,skills:data}))} />
                 )}
               </div>
-              <button className="bg-gradient-to-br from-green-100 to-green-200 ring-green-300 text-green-600 ring hover:ring-green-400 transition-all rounded-md px-6 py-2 mt-6 text-sm">
+              <button onClick={()=>{toast.promise(saveResume,{loading: 'saving..'})}} className="bg-gradient-to-br from-green-100 to-green-200 ring-green-300 text-green-600 ring hover:ring-green-400 transition-all rounded-md px-6 py-2 mt-6 text-sm">
                 Save Changes
               </button> 
             </div>

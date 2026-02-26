@@ -110,7 +110,12 @@ export const updateResume = async (req,res)=>{
         const image = req.file; // Get the uploaded image file from the request (if any)
 
         
-        let resumeDataCopy = JSON.parse(JSON.stringify(resumeData)); // Parse the resumeData string into a JavaScript object
+        let resumeDataCopy;
+        if(typeof resumeData === "string"){
+            resumeDataCopy = await JSON.parse(resumeData); // Parse the resumeData string into a JavaScript object
+        }else{
+            resumeDataCopy = structuredClone(resumeData); // If resumeData is already an object, create a deep copy of it using structuredClone
+        }
         
         if(image){
             const imageBufferData = fs.createReadStream(image.path); // Create a readable stream from the uploaded image file
