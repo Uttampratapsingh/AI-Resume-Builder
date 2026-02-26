@@ -5,6 +5,7 @@ import Resume from "../models/resume.js";
 //controller for getting user resume 
 // GET: /api/resume
 export const getUserResumes = async (req,res)=>{
+    console.log("Get user resumes controller called");
     try {
         const userId = req.userId;
         //return user resumes
@@ -22,9 +23,10 @@ export const getUserResumes = async (req,res)=>{
 //controller for creating new resume
 //POST: /api/resumes/create
 export const createResume = async (req,res)=>{
+    console.log("Create resume controller called");
     try {
         const userId = req.userId;
-        const title = req.body;
+        const title = req.body.title;
 
         //create new resume
         const newResume = await Resume.create({userId, title});
@@ -39,6 +41,7 @@ export const createResume = async (req,res)=>{
 //controller for deleting resume
 //DELETE: /api/resumes/delete
 export const deleteResume = async (req,res)=>{
+    console.log("Delete resume controller called");
     try {
         const userId = req.userId;
         const {resumeId} = req.params;
@@ -56,6 +59,7 @@ export const deleteResume = async (req,res)=>{
 //get user resume by id
 //GET: /api/resumes/get
     export const getResumeById = async (req,res)=>{
+        console.log("Get resume by id controller called");
         try {
             const userId = req.userId;
             const {resumeId} = req.params;
@@ -79,6 +83,7 @@ export const deleteResume = async (req,res)=>{
 //get resume by id public
 //GET: /api/resumes/public
 export const getPublicResumeById = async (req,res)=>{
+    console.log("Get public resume by id controller called");
     try {
         const {resumeId} = req.params;
         const resume = await Resume.findOne({_id: resumeId, public: true});
@@ -98,6 +103,7 @@ export const getPublicResumeById = async (req,res)=>{
 //PUT: /api/resumes/update
 
 export const updateResume = async (req,res)=>{
+    console.log("Update resume controller called");
     try {
         const userId = req.userId;
         const {resumeId,resumeData,removeBackground} = req.body; // Get the resume data and removeBackground flag from the request body

@@ -11,6 +11,7 @@ const generateToken = (userId) => {
 //POST: /api/users/register
 
 export const registerUser = async (req, res) => {
+    console.log("Register user controller called");
     try{
         const {name, email, password} = req.body;
         
@@ -57,6 +58,7 @@ export const registerUser = async (req, res) => {
 //POST: /api/users/login
 
 export const loginUser = async (req, res) => {
+    console.log("Login user controller called");
     try{
         const {email, password} = req.body;
 
@@ -97,6 +99,7 @@ export const loginUser = async (req, res) => {
 //controller for getting user by id
 //GET: /api/users/data
 export const getUserById = async (req,res)=>{
+    console.log("Get user by id controller called");
     try{
         const userId = req.userId;
 

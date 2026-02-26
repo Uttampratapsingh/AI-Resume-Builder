@@ -8,6 +8,7 @@ import userResumeTemplate from "../template/userResumeTemplate.js";
 // controller for enhancing resume summary using AI
 // PODST: /api/ai/enhance-pro-sum
 export const enhanceProfessionalSummary = async (req, res) => {
+    console.log("Enhance professional summary controller called");
     try {
         const { userContent } = req.body;
 
@@ -36,6 +37,7 @@ export const enhanceProfessionalSummary = async (req, res) => {
 // controller for the enhance job description using AI
 // PODST: /api/ai/enhance-job-desc
 export const enhanceJobDescription = async (req, res) => {
+    console.log("Enhance job description controller called");
     try {
         const { userContent } = req.body;
 
@@ -63,6 +65,7 @@ export const enhanceJobDescription = async (req, res) => {
 //controller for uploading resume to the database
 //POST: /api/ai/upload-resume
 export const uploadResume = async (req, res) => {
+    console.log("Upload resume controller called");
     try {
         const {resumeText,title} = req.body;
         const userId = req.userId;
