@@ -1,6 +1,5 @@
-import { FilePenLineIcon, PencilIcon, PlusIcon, TrashIcon, UploadCloud, UploadCloudIcon, XIcon } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
-import { dummyResumeData } from '../assets/assets'
+import { FilePenLineIcon, LoaderCircleIcon, PencilIcon, PlusIcon, TrashIcon, UploadCloud, UploadCloudIcon, XIcon } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import api from '../configs/api.js'
@@ -58,6 +57,8 @@ const Dashboard = () => {
       setTitle("");
       setResume(null);
       setShowUploadResume(false);
+      console.log("Resume uploaded successfully, ID:", data.resumeId);
+      console.log(data);
       navigate(`/app/builder/${data.resumeId}`);
 
     } catch (error) {
@@ -218,7 +219,8 @@ const Dashboard = () => {
               <input type="file" id="resume-input" className="hidden" accept=".pdf" onChange={(e)=>setResume(e.target.files[0])} />
             </div>
             <button className='w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors'>
-              Upload Resume
+              {loading && <LoaderCircleIcon className='animate-spin size-4 text-white'/>}
+              {loading ? "Uploading..." : "Upload Resume"}
             </button>
 
             <XIcon

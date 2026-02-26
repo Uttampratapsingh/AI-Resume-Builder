@@ -69,21 +69,27 @@ export const uploadResume = async (req, res) => {
     try {
         const {resumeText,title} = req.body;
         const userId = req.userId;
-
+        console.log("Resume text:", resumeText);
+        console.log("Title:", title);
         if(!resumeText || !title) {
             return res.status(400).json({ message: 'Resume text and title are required' });
         }
 
         const systemPrompt = "You are an expert AI agent to extract data from resume"
-        const userPrompt = `Extract data from this resume: ${resumeText}
-        Provide ONLY valid JSON.
-        Do not wrap in markdown.
-        Do not add explanations.
+        const userPrompt = `Provide ONLY valid JSON. Do not wrap in markdown. Do not add explanations.
         provide data in the following JSON format with no additional text before and after the JSON:
-
+        --------------------------------------------------------
         ${JSON.stringify(userResumeTemplate, null, 2)}
+        --------------------------------------------------------
+        Extract data from this resume:
+        --------------------------------------------------------
+        ${resumeText}
 
         `;
+
+        console.log("System Prompt:", systemPrompt);
+        console.log("User Prompt:", userPrompt);
+
 
         const response = await geminiAi.chat.completions.create({
             model: process.env.MODEL || "gemini-3-flash-preview",
@@ -92,12 +98,16 @@ export const uploadResume = async (req, res) => {
                 {role: "user" , content: userPrompt}
             ],
             response_format: {
-                type: "json_object"}
-        })
+                type: "json_object"},
+        });
+
+        console.log("AI Response:", response);
 
         const extractedData = response.choices[0].message.content;
         const parsedData = JSON.parse(extractedData);
         const newResume = await Resume.create({userId,title,...parsedData});
+
+        console.log("New Resume Created:", newResume);
         
         return res.status(201).json({ message: 'Resume uploaded successfully', resumeId: newResume._id});
 
