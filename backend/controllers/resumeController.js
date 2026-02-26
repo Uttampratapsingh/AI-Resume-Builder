@@ -110,7 +110,7 @@ export const updateResume = async (req,res)=>{
             const imageBufferData = fs.createReadStream(image.path); // Create a readable stream from the uploaded image file
 
             const response = await imageKit.files.upload({
-                file: imageBufferData,// Set the file data to be uploaded to ImageKit
+                file: imageBufferData,//
                 fileName: 'resume.png', // Set the file name for the uploaded image
                 folder : 'user-resumes', // Specify the folder in ImageKit where the image will be stored
                 transformation:{ 

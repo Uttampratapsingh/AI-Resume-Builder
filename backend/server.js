@@ -1,10 +1,12 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import connectDB from './config/db.js';
-import router from './routes/userRoutes.js';
+import userRouter from './routes/userRoutes.js';
+import resumeRouter from './routes/resumeRoutes.js';
 
-dotenv.config(); // Load environment variables from .env file
+// dotenv.config() is handled by the import 'dotenv/config' at the top
+
 await connectDB(); // Connect to the database before starting the server
 
 const app = express();
@@ -17,7 +19,8 @@ app.get('/', (req, res) => {
     res.send('Hello from the backend!');
 });
 
-app.use('/api/users',router);
+app.use('/api/users',userRouter);
+app.use('/api/resumes',resumeRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

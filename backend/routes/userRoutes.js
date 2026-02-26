@@ -3,12 +3,12 @@ import { getUserById, loginUser, registerUser } from '../controllers/userControl
 import protect from '../middleware/authMiddleware.js';
 import { getUserResumes } from '../controllers/resumeController.js';
 
-const router = express.Router();
+const userRouter = express.Router();
 
 
-router.post('/register', registerUser);
-router.post('/login', loginUser);
-router.get('/data', protect, getUserById);
-router.get('/resumes', protect,getUserResumes);
+userRouter.post('/register', registerUser);
+userRouter.post('/login', loginUser);
+userRouter.get('/data', protect, getUserById);
+userRouter.get('/resumes', protect,getUserResumes);
 
-export default router;
+export default userRouter;
