@@ -1,14 +1,19 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logo from '../assets/logo.svg'
+import {useSelector, useDispatch} from 'react-redux'
+import {logout} from '../app/features/authSlice'
 
 const Navbar = () => {
-    const user = {name: "Uttam Pratap Singh"};
+    const {user} = useSelector(state=>state.auth);
+    const dispatch = useDispatch();
+
     const navigate = useNavigate();
 
+
     const logoutUser = () => {
-        // Clear user session or token here
         navigate('/');
+        dispatch(logout());
     }
   return (
   <div className='shadow bg-white'>
