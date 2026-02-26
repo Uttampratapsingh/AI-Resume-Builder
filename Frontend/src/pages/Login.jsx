@@ -1,13 +1,18 @@
-import React from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import {useSearchParams } from 'react-router-dom'
 import { Mail, Lock, UserRoundPen} from 'lucide-react'
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { login } from '../app/features/authSlice'
+import api from '../configs/api.js'
+import toast from 'react-hot-toast'
 
 const Login = () => {
   const [searchParams] = useSearchParams()
   const initialState = searchParams.get("state") === "signup" ? "signup" : "login"
-  const [state, setState] = React.useState(initialState)
+  const [state, setState] = useState(initialState)
+  const dispatch = useDispatch();
 
-    const [formData, setFormData] = React.useState({
+    const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: ''
@@ -18,8 +23,16 @@ const Login = () => {
         setFormData(prev => ({ ...prev, [name]: value }))
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
+        try {
+            const {data} = await api.post(`/api/users/${state}`,formData);
+            dispatch(login(data));
+            localStorage.setItem('token',data.token);
+            toast.success(data.message);
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message || "Something went wrong");
+        }
 
     }
 

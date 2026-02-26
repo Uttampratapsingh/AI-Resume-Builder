@@ -21,7 +21,7 @@ const CallToAction = () => {
                         Your next favourite tool is just one click away.
                     </p>
                 </div>
-                <Link to='login' className="px-12 py-3 text-slate-800 bg-white rounded-full text-sm mt-4">
+                <Link to='/app?state=register' className="px-12 py-3 text-slate-800 bg-white rounded-full text-sm mt-4">
                     Get Started
                 </Link>
             </div>
