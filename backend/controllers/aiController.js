@@ -17,16 +17,16 @@ export const enhanceProfessionalSummary = async (req, res) => {
             return res.status(400).json({ message: 'User content is required' });
         }
 
-        // Simulate AI enhancement (replace with actual AI logic)
+        // Enhance using Gemini AI
         const response = await geminiAi.models.generateContent({
-            model: process.env.MODEL || "gemini-3-flash-preview",
-            messages: [
-                { role: "system", content : enhanceSummaryTemplate},
-                {role: "user" , content: userContent}
-            ]
-        })
+            model: process.env.MODEL || "gemini-2.0-flash",
+            contents: userContent,
+            config: {
+                systemInstruction: enhanceSummaryTemplate,
+            },
+        });
         console.log("AI Response:", response);
-        const enhancedSummary = response.choices[0].message.content.trim();
+        const enhancedSummary = response.text.trim();
         console.log("Enhanced Summary:", enhancedSummary);
         return res.status(200).json({ enhancedSummary });
     } catch (error) {
@@ -50,16 +50,16 @@ export const enhanceJobDescription = async (req, res) => {
             return res.status(400).json({ message: 'User content is required' });
         }
 
-        // Simulate AI enhancement (replace with actual AI logic)
+        // Enhance using Gemini AI
         const response = await geminiAi.models.generateContent({
-            model: process.env.MODEL || "gemini-3-flash-preview",
-            messages: [
-                { role: "system", content : enhanceJobTemplate},
-                {role: "user" , content: userContent}
-            ]
-        })
-
-        const enhancedSummary = response.choices[0].message.content.trim();
+            model: process.env.MODEL || "gemini-2.0-flash",
+            contents: userContent,
+            config: {
+                systemInstruction: enhanceJobTemplate,
+            },
+        });
+        console.log("AI Response:", response);
+        const enhancedSummary = response.text.trim();
         console.log("Enhanced Job Description:", enhancedSummary);
         return res.status(200).json({ enhancedSummary });
     } catch (error) {
@@ -101,18 +101,25 @@ export const uploadResume = async (req, res) => {
 
 
         const response = await geminiAi.models.generateContent({
-            model: process.env.MODEL || "gemini-3-flash-preview",
-            messages: [
-                { role: "system", content : systemPrompt},
-                {role: "user" , content: userPrompt}
-            ],
-            response_format: {
-                type: "json_object"},
+            model: process.env.MODEL || "gemini-2.0-flash",
+            contents: userPrompt,
+            config: {
+                systemInstruction: systemPrompt,
+                responseMimeType: "application/json",
+            },
         });
 
         console.log("AI Response:", response);
 
-        const extractedData = response.choices[0].message.content;
+        let extractedData = response.text;
+        if (!extractedData) {
+            // fallback: extract from candidates
+            extractedData = response.candidates?.[0]?.content?.parts?.[0]?.text;
+        }
+        if (!extractedData) {
+            return res.status(500).json({ message: 'AI returned empty response' });
+        }
+        extractedData = extractedData.trim();
         const parsedData = JSON.parse(extractedData);
         const newResume = await Resume.create({userId,title,...parsedData});
 

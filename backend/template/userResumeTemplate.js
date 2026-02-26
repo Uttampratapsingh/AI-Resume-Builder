@@ -1,50 +1,44 @@
 const userResumeTemplate = {
-  title: { type: String, default: "Untitled Resume" },
-  public: { type: Boolean, default: false },
-  template: { type: String, default: "classic" },
-  accent_color: { type: String, default: "#3B82F6" },
+  professional_summary: "A brief professional summary of the candidate",
 
-  professional_summary: { type: String, default: "" },
-
-  skills: [{ type: String }],
+  skills: ["skill1", "skill2", "skill3"],
 
   personal_info: {
-    image: { type: String, default: "" },
-    full_name: { type: String, default: "" },
-    profession: { type: String, default: "" },
-    email: { type: String, default: "" },
-    phone: { type: String, default: "" },
-    location: { type: String, default: "" },
-    linkedin: { type: String, default: "" },
-    website: { type: String, default: "" },
+    full_name: "Full Name",
+    profession: "Job Title / Profession",
+    email: "email@example.com",
+    phone: "+1234567890",
+    location: "City, Country",
+    linkedin: "https://linkedin.com/in/username",
+    website: "https://example.com",
   },
 
   experience: [
     {
-      company: { type: String },
-      position: { type: String },
-      start_date: { type: String },
-      end_date: { type: String },
-      description: { type: String },
-      is_current: { type: Boolean },
+      company: "Company Name",
+      position: "Job Title",
+      start_date: "MM/YYYY",
+      end_date: "MM/YYYY or Present",
+      description: "Description of responsibilities and achievements",
+      is_current: false,
     },
   ],
 
   project: [
     {
-      name: { type: String },
-      type: { type: String },
-      description: { type: String },
+      name: "Project Name",
+      type: "Project Type (e.g. Web App, Mobile App)",
+      description: "Description of the project",
     },
   ],
 
   education: [
     {
-      institution: { type: String },
-      degree: { type: String },
-      field: { type: String },
-      graduation_date: { type: String },
-      gpa: { type: String },
+      institution: "University / School Name",
+      degree: "Degree (e.g. Bachelor of Science)",
+      field: "Field of Study",
+      graduation_date: "MM/YYYY",
+      gpa: "GPA if available",
     },
   ],
 }
