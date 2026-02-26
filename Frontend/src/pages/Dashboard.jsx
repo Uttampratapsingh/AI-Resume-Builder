@@ -21,7 +21,7 @@ const Dashboard = () => {
 
   const loadAllResumes = async () => {
     try {
-      const {data} = await api.get('api/users/resumes',{headers: {Authorization: token}});
+      const {data} = await api.get('/api/users/resumes',{headers: {Authorization: token}});
       setAllResumes(data.resumes);
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message || "Failed to load resumes. Please try again.");
@@ -52,6 +52,11 @@ const Dashboard = () => {
     e.preventDefault();
     setLoading(true);
     try {
+      if(!resume){
+          toast.error("Please select a PDF file.");
+          setLoading(false);
+          return;
+      }
       const resumeText = await pdfToText(resume);
       const {data} = await api.post('/api/ai/upload-resume',{title,resumeText},{headers:{Authorization: token}});
       setTitle("");
@@ -104,10 +109,6 @@ const Dashboard = () => {
   <div>
     <div className='max-w-7xl mx-auto px-4 py-8'>
 
-      <p className='text-2xl font-medium mb-6 bg-gradient-to-r from-slate-600 to-slate-700 bg-clip-text text-transparent sm:hidden'>
-        Welcome, Joe Doe
-      </p>
-
       <div className='flex gap-4'>
         <button onClick={()=> setShowCreateResume(true)} className='w-full bg-white sm:max-w-36 h-48 flex flex-col items-center justify-center rounded-lg gap-2 text-slate-600 border border-dashed border-slate-300 group hover:border-indigo-500 hover:shadow-lg transition-all duration-300 cursor-pointer'>
           
@@ -118,7 +119,7 @@ const Dashboard = () => {
           </p>
 
         </button>
-        <button onClick={setShowUploadResume} className='w-full bg-white sm:max-w-36 h-48 flex flex-col items-center justify-center rounded-lg gap-2 text-slate-600 border border-dashed border-slate-300 group hover:border-purple-500 hover:shadow-lg transition-all duration-300 cursor-pointer'>
+        <button onClick={()=>setShowUploadResume(true)} className='w-full bg-white sm:max-w-36 h-48 flex flex-col items-center justify-center rounded-lg gap-2 text-slate-600 border border-dashed border-slate-300 group hover:border-purple-500 hover:shadow-lg transition-all duration-300 cursor-pointer'>
           
           <UploadCloudIcon className='size-11 transition-all duration-300 p-2.5 bg-gradient-to-br from-purple-300 to-purple-500 text-white rounded-full' />
           
@@ -138,7 +139,7 @@ const Dashboard = () => {
           return (
             <button
               key={index}
-              onClick={()=>navigate(`builder/${resume._id}`)}
+              onClick={()=>navigate(`/app/builder/${resume._id}`)}
               className="relative w-full sm:max-w-36 h-48 flex flex-col items-center justify-center rounded-lg gap-2 border group hover:shadow-lg transition-all duration-300 cursor-pointer"
               style={{
                 background: `linear-gradient(135deg, ${baseColor}10, ${baseColor}40)`,
@@ -234,7 +235,7 @@ const Dashboard = () => {
               </label>
               <input type="file" id="resume-input" className="hidden" accept=".pdf" onChange={(e)=>setResume(e.target.files[0])} />
             </div>
-            <button className='w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors'>
+            <button disabled={loading} className='w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors flex items-center justify-center gap-2'>
               {loading && <LoaderCircleIcon className='animate-spin size-4 text-white'/>}
               {loading ? "Uploading..." : "Upload Resume"}
             </button>
@@ -244,6 +245,7 @@ const Dashboard = () => {
               onClick={() => {
                 setShowUploadResume(false);
                 setTitle("");
+                setResume(null);
               }}
             />
           </div>

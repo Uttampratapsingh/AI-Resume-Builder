@@ -2,6 +2,7 @@ import geminiAi from "../config/ai.js";
 import enhanceJobTemplate from "../template/enhanceJobTemplate.js";
 import enhanceSummaryTemplate from "../template/enhanceSummaryTemplate.js";
 import userResumeTemplate from "../template/userResumeTemplate.js";
+import Resume from "../models/resume.js";
 
 
 
@@ -91,7 +92,7 @@ export const uploadResume = async (req, res) => {
         console.log("User Prompt:", userPrompt);
 
 
-        const response = await geminiAi.chat.completions.create({
+        const response = await geminiAi.models.generateContent({
             model: process.env.MODEL || "gemini-3-flash-preview",
             messages: [
                 { role: "system", content : systemPrompt},
@@ -112,8 +113,10 @@ export const uploadResume = async (req, res) => {
         return res.status(201).json({ message: 'Resume uploaded successfully', resumeId: newResume._id});
 
     } catch (error) {
-
+        console.error("Upload resume error:", error.message, error.status);
+        if (error.status === 429) {
+            return res.status(429).json({ message: 'AI service rate limit exceeded. Please wait a moment and try again.' });
+        }
         return res.status(500).json({ message: 'Error uploading resume', error: error.message });
-
     }
 }
