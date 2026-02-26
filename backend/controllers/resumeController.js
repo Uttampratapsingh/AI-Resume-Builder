@@ -121,7 +121,7 @@ export const updateResume = async (req,res)=>{
             const imageBufferData = fs.createReadStream(image.path); // Create a readable stream from the uploaded image file
 
             const response = await imageKit.files.upload({
-                file: imageBufferData,//
+                file: imageBufferData,
                 fileName: 'resume.png', // Set the file name for the uploaded image
                 folder : 'user-resumes', // Specify the folder in ImageKit where the image will be stored
                 transformation:{ 
@@ -129,6 +129,7 @@ export const updateResume = async (req,res)=>{
                     (removeBackground ? ',e-background_removal' : '') // If removeBackground is true, add the background removal transformation
                 }
             });
+            resumeDataCopy.personal_info.image = response.url; // Update the resume data with the URL of the uploaded image from ImageKit
         }
 
         const resume = await Resume.findByIdAndUpdate({userId, _id: resumeId},resumeDataCopy, {new: true}) // Find the resume by userId and resumeId, and update it with the new resume data. The {new: true} option ensures that the updated resume is returned in the response.
