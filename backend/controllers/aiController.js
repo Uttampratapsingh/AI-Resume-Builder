@@ -1,7 +1,7 @@
-import geminiAi from "../config/ai";
-import enhanceJobTemplate from "../template/enhanceJobTemplate";
-import enhanceSummaryTemplate from "../template/enhanceSummaryTemplate";
-import userResumeTemplate from "../template/userResumeTemplate";
+import geminiAi from "../config/ai.js";
+import enhanceJobTemplate from "../template/enhanceJobTemplate.js";
+import enhanceSummaryTemplate from "../template/enhanceSummaryTemplate.js";
+import userResumeTemplate from "../template/userResumeTemplate.js";
 
 
 
