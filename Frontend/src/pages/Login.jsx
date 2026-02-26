@@ -64,11 +64,12 @@ const Login = () => {
                     <input type="password" name="password" placeholder="Password" className="w-full bg-transparent text-black placeholder-black/60 focus:ring-0 focus:outline-none border-0" value={formData.password} onChange={handleChange} required />
                 </div>
 
-                <div className="mt-4 text-left">
+                {/* apply when know how to reset */}
+                {/* <div className="mt-4 text-left">
                     <button className="text-sm text-green-400 hover:underline">
                         Forget password?
                     </button>
-                </div>
+                </div> */}
 
                 <button type="submit" className="mt-2 w-full h-11 rounded-full text-white bg-green-600 hover:bg-green-500 transition " >
                     {state === "login" ? "Login" : "Sign up"}
