@@ -1,7 +1,13 @@
-import { Briefcase, Plus, Sparkles, Trash2 } from 'lucide-react'
-import React from 'react'
+import { Briefcase, Loader2, Plus, Sparkles, Trash2 } from 'lucide-react'
+import api from '../configs/api.js'
+import { useSelector } from 'react-redux';
+import {toast } from 'react-hot-toast';
+import { useState } from 'react';
 
 const ExperienceForm = ({data, onChange}) => {
+
+    const {token} = useSelector((state) => state.auth);
+    const[generatingIndex, setGeneratingIndex] = useState(-1);
 
     const removeExperience = (index) => {
         const updated = data.filter((_, i) => i !== index);
@@ -25,6 +31,27 @@ const ExperienceForm = ({data, onChange}) => {
         };
         onChange([...data, newExperience]);
     };
+
+    const generateDescription = async (index) => {
+        setGeneratingIndex(index);
+        const experience = data[index];
+        const prompt = `enhance this job description : ${experience.description || "No description provided"} for the postion of ${experience.position || "Unknown position"} at ${experience.company || "Unknown company"}. Make it more impactful and achievement-oriented.`
+
+        try {
+            const {data} = await api.post('/api/ai/enhance-job-desc',{userContent : prompt},{headers : {Authorization : token}});
+            updateExperience(index, "description", data.enhancedSummary);
+            toast.success("Description enhanced successfully!");
+            
+        } catch (error) {
+            if(error.response && error.response.status === 429) {
+                toast.error("AI service rate limit exceeded. Please wait a moment and try again.");
+            } else {
+                toast.error("Failed to enhance description. Please try again.");
+            }
+        }finally{
+            setGeneratingIndex(-1);
+        }
+    }
 
 
   return (
@@ -134,9 +161,9 @@ const ExperienceForm = ({data, onChange}) => {
                             <label className="text-sm font-medium text-gray-700">
                             Job Description
                             </label>
-                            <button className="flex items-center gap-1 px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors disabled:opacity-50">
-                            <Sparkles className="w-3 h-3" />
-                            Enhance with AI
+                            <button onClick={()=>generateDescription(index)} disabled={generatingIndex === index} className="flex items-center gap-1 px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors disabled:opacity-50">
+                            {generatingIndex === index ? <Loader2 className='w-3 h-3 animate-spin'/> : <Sparkles className="w-3 h-3" />}
+                            {generatingIndex === index ? "Enhancing..." : "AI Enhance"}
                             </button>
                         </div>
 
@@ -149,6 +176,9 @@ const ExperienceForm = ({data, onChange}) => {
                             className="w-full text-sm px-3 py-2 rounded-lg resize-none"
                             placeholder="Describe your key responsibilities and achievements..."
                         />
+                        <p className="text-xs text-gray-500 max-w-4/5 mx-auto text-center">
+                            Tip: Enhance after filling out company and position for better AI suggestions.
+                        </p>
                     </div>
 
                 </div>
