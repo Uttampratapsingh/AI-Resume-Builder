@@ -12,23 +12,27 @@ export const enhanceProfessionalSummary = async (req, res) => {
     console.log("Enhance professional summary controller called");
     try {
         const { userContent } = req.body;
-
+        console.log("User content for enhancement:", userContent);
         if(!userContent) {
             return res.status(400).json({ message: 'User content is required' });
         }
 
         // Simulate AI enhancement (replace with actual AI logic)
-        const response = await geminiAi.chat.completions.create({
+        const response = await geminiAi.models.generateContent({
             model: process.env.MODEL || "gemini-3-flash-preview",
             messages: [
                 { role: "system", content : enhanceSummaryTemplate},
                 {role: "user" , content: userContent}
             ]
         })
-
+        console.log("AI Response:", response);
         const enhancedSummary = response.choices[0].message.content.trim();
+        console.log("Enhanced Summary:", enhancedSummary);
         return res.status(200).json({ enhancedSummary });
     } catch (error) {
+        if (error.status === 429) {
+            return res.status(429).json({ message: 'AI service rate limit exceeded. Please wait a moment and try again.' });
+        }
         return res.status(500).json({ message: 'Error enhancing professional summary', error: error.message });
     }
 }
@@ -47,7 +51,7 @@ export const enhanceJobDescription = async (req, res) => {
         }
 
         // Simulate AI enhancement (replace with actual AI logic)
-        const response = await geminiAi.chat.completions.create({
+        const response = await geminiAi.models.generateContent({
             model: process.env.MODEL || "gemini-3-flash-preview",
             messages: [
                 { role: "system", content : enhanceJobTemplate},
@@ -56,8 +60,12 @@ export const enhanceJobDescription = async (req, res) => {
         })
 
         const enhancedSummary = response.choices[0].message.content.trim();
+        console.log("Enhanced Job Description:", enhancedSummary);
         return res.status(200).json({ enhancedSummary });
     } catch (error) {
+        if (error.status === 429) {
+            return res.status(429).json({ message: 'AI service rate limit exceeded. Please wait a moment and try again.' });
+        }
         return res.status(500).json({ message: 'Error enhancing job description', error: error.message });
     }
 }
