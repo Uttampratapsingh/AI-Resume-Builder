@@ -71,8 +71,17 @@ const Dashboard = () => {
 
   const editTitle = async (e) => {
     e.preventDefault();
-    setEditResumeId(null);
-    setTitle("");
+    try {
+      const {data} = await api.put(`/api/resumes/update`,{resumeId:editResumeId,resumeData:{title}},{headers:{Authorization: token}});
+      setAllResumes(allResumes.map(resume => resume._id === editResumeId ? {...resume, title} : resume));
+      setEditResumeId(null);
+      setTitle('');
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message || "Failed to edit resume title. Please try again.");
+      console.error("Error editing resume title:", error);
+    }
+    
   }
 
   const deleteResume = async (id) => {
