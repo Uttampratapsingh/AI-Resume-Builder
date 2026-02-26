@@ -2,7 +2,9 @@
 
 A full-stack web application that lets users create, customize, and share professional resumes with the help of **Google Gemini AI**. Built with **React**, **Node.js**, **Express**, and **MongoDB**.
 
-![Dashboard](./screenshots/dashboard.png)
+### 🌐 [Live Demo](https://ai-resume-builder-zpxl.vercel.app/)
+
+![Dashboard](./screenshots/dashboard1.png)
 
 ---
 
