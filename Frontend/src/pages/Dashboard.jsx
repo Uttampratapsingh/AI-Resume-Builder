@@ -21,7 +21,13 @@ const Dashboard = () => {
 
 
   const loadAllResumes = async () => {
-    setAllResumes(dummyResumeData);
+    try {
+      const {data} = await api.get('api/users/resumes',{headers: {Authorization: token}});
+      setAllResumes(data.resumes);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message || "Failed to load resumes. Please try again.");
+      console.error("Error loading resumes:", error);
+    }
   }
 
   useEffect(() => {
