@@ -88,11 +88,15 @@ const ResumeBuilder = () => {
 
     if (navigator.share) {
       navigator.share({
+        title: "My Resume",
         url: resumeUrl,
-        text: "My Resume",
-      });
+      }).catch(() => {});
     } else {
-      alert('Share not supported on this browser.');
+      navigator.clipboard.writeText(resumeUrl).then(() => {
+        toast.success("Resume link copied to clipboard!");
+      }).catch(() => {
+        prompt("Copy this link:", resumeUrl);
+      });
     }
   };
 

@@ -14,8 +14,8 @@ const Preview = () => {
   const loadResume = async () => {
     try {
       setIsLoading(true);
-      const {data} = await api.get('/api/resume/public/'+resumeId);
-      setResumeData(data);
+      const {data} = await api.get('/api/resumes/public/'+resumeId);
+      setResumeData(data.resume);
     } catch (error) {
       console.error("Error loading resume:", error);
     }finally{
