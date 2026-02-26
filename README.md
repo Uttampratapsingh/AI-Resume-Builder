@@ -4,7 +4,7 @@ A full-stack web application that lets users create, customize, and share profes
 
 ### 🌐 [Live Demo](https://ai-resume-builder-zpxl.vercel.app/)
 
-![Dashboard](./screenshots/dashboard1.png)
+![Dashboard](./screenshots/dashboard.png)
 
 ---
 
