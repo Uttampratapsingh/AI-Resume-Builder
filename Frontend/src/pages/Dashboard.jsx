@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import api from '../configs/api.js'
 import { toast } from 'react-hot-toast';
+import pdfToText from 'react-pdftotext';
 
 const Dashboard = () => {
   const colors = ["#9333ea", "#d97706", "#dc2626", "#0284c7", "#16a34a"];
@@ -14,8 +15,8 @@ const Dashboard = () => {
   const [title, setTitle] = useState("");
   const [resume, setResume] = useState(null);
   const [editResumeId, setEditResumeId] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const {user,token} = useSelector(state => state.auth);
 
 
@@ -28,8 +29,8 @@ const Dashboard = () => {
   },[])
 
   const createResume = async (e) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
       const {data} = await api.post('/api/resumes/create',{title},{headers:{
         Authorization:token }})
       setAllResumes(prev => [...prev, data.resume]);
@@ -44,9 +45,21 @@ const Dashboard = () => {
 
   const uploadResume = async (e) => {
     e.preventDefault();
-    setShowUploadResume(false);
-    setTitle("");
-    navigate(`/app/builder/res123`);
+    setLoading(true);
+    try {
+      const resumeText = await pdfToText(resume);
+      const {data} = await api.post('/api/ai/upload-resume',{title,resumeText},{headers:{Authorization: token}});
+      setTitle("");
+      setResume(null);
+      setShowUploadResume(false);
+      navigate(`/app/builder/${data.resumeId}`);
+
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message || "Failed to upload resume. Please try again.");
+      console.error("Error uploading resume:", error);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const editTitle = async (e) => {
