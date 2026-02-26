@@ -76,10 +76,17 @@ const Dashboard = () => {
   }
 
   const deleteResume = async (id) => {
-    const confirm = window.confirm("Are you sure you want to delete this resume?");
-    if(confirm){
-      // Call API to delete resume
-      setAllResumes(prev => prev.filter(resume => resume._id !== id));
+    try {
+      const confirm = window.confirm("Are you sure you want to delete this resume?");
+      if(confirm){
+        const {data} = await api.delete(`/api/resumes/delete/${id}`,{headers:{Authorization: token}});
+        setAllResumes(allResumes.filter(resume => resume._id !== id));
+        toast.success(data.message);
+      }
+      
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message || "Failed to delete resume. Please try again.");
+      console.error("Error deleting resume:", error);
     }
   }
 
