@@ -1,9 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../../assets/logo.svg'
+import { useSelector } from 'react-redux'
 
 const Hero = () => {
-  const [menuOpen, setMenuOpen] = React.useState(false);
+    const {user} = useSelector(state=>state.auth);
+
+    const [menuOpen, setMenuOpen] = React.useState(false);
 
     return (
         <>
@@ -22,11 +25,13 @@ const Hero = () => {
                     </div>
 
                     <div className="flex gap-2">
-                        <Link to='/app?state=register' className="hidden md:block px-6 py-2 bg-green-500 hover:bg-green-700 active:scale-95 transition-all rounded-full text-white">
+                        <Link hidden={user} to='/app?state=register' className="hidden md:block px-6 py-2 bg-green-500 hover:bg-green-700 active:scale-95 transition-all rounded-full text-white">
                             Get started
                         </Link>
-                        <Link to='/app?state=login' className="hidden md:block px-6 py-2 border active:scale-95 hover:bg-slate-50 transition-all rounded-full text-slate-700 hover:text-slate-900" >
+                        <Link hidden={user} to='/app?state=login' className="hidden md:block px-6 py-2 border active:scale-95 hover:bg-slate-50 transition-all rounded-full text-slate-700 hover:text-slate-900" >
                             Login
+                        </Link>
+                        <Link to='/app' hidden={!user} className="hidden md:block px-8 py-2 bg-green-500 hover:bg-green-700 active:scale-95 transition-all rounded-full text-white" > Dashboard
                         </Link>
                     </div>
 
